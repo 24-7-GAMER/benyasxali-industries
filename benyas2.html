@@ -643,6 +643,142 @@ footer {
 }
 
 </style>
+<style>
+/* ===============================
+   ⚡ ULTRA SIGMA FX
+   =============================== */
+
+/* SCREEN SHAKE */
+@keyframes screenShake {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(2px, -2px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(2px, 2px); }
+  100% { transform: translate(0); }
+}
+
+/* LIGHTNING FLASH */
+@keyframes lightning {
+  0%, 97%, 100% { opacity: 0; }
+  98% { opacity: 0.9; }
+}
+
+/* HUD CORNERS */
+.hud {
+  position: fixed;
+  inset: 20px;
+  pointer-events: none;
+  z-index: 99999;
+  border: 2px solid rgba(255,0,0,0.6);
+  box-shadow: 0 0 40px rgba(255,0,0,0.8);
+  animation: rgbShift 8s linear infinite;
+}
+
+.hud::before,
+.hud::after {
+  content: "";
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border: 4px solid gold;
+}
+
+.hud::before {
+  top: -4px;
+  left: -4px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.hud::after {
+  bottom: -4px;
+  right: -4px;
+  border-left: none;
+  border-top: none;
+}
+
+/* LIGHTNING OVERLAY */
+#lightning {
+  position: fixed;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  z-index: 99998;
+  animation: lightning 12s infinite;
+}
+
+/* ENGINE RPM BAR */
+#rpm {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 220px;
+  height: 14px;
+  border: 2px solid red;
+  background: black;
+  overflow: hidden;
+  z-index: 99999;
+}
+
+#rpm::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, red, gold);
+  animation: rpmMove 1.2s infinite alternate;
+}
+
+@keyframes rpmMove {
+  from { width: 10%; }
+  to { width: 100%; }
+}
+</style>
+
+<div class="hud"></div>
+<div id="lightning"></div>
+<div id="rpm"></div>
+
+<script>
+/* ===============================
+   🔊 ENGINE REV SOUND
+   =============================== */
+const engine = new Audio("https://cdn.pixabay.com/audio/2022/03/15/audio_1e5f1d3b91.mp3");
+engine.volume = 0.4;
+
+/* REV ON HOVER */
+document.querySelectorAll("div[style*='width: 350px']").forEach(card => {
+  card.addEventListener("mouseenter", () => {
+    engine.currentTime = 0;
+    engine.play();
+    document.body.style.animation = "screenShake 0.35s";
+  });
+  card.addEventListener("mouseleave", () => {
+    engine.pause();
+    document.body.style.animation = "";
+  });
+});
+
+/* ===============================
+   🏎️ PARALLAX MOTION
+   =============================== */
+document.addEventListener("mousemove", e => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 20;
+  const y = (e.clientY / window.innerHeight - 0.5) * 20;
+
+  document.querySelectorAll("div[style*='width: 350px']").forEach(card => {
+    card.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
+  });
+});
+
+/* ===============================
+   ⚡ RANDOM LIGHTNING + SHAKE
+   =============================== */
+setInterval(() => {
+  document.body.style.animation = "screenShake 0.25s";
+  setTimeout(() => document.body.style.animation = "", 300);
+}, 15000);
+</script>
 
 </body>
 </html>
